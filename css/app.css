@@ -1,0 +1,45 @@
+hr.dropshadow {
+	margin-left: 45%;
+	margin-right: 45%;
+    height: 3px;
+    border: 1;
+    box-shadow: inset 0 4px 4px -1px rgba(40,40,40,0.8);
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      -ms-border-radius: 2px;
+      -o-border-radius: 2px;
+      border-radius: 2px;
+}
+
+.googleFont {
+	font-family: 'Open Sans', sans-serif;
+}
+body {
+/* Background pattern from subtlepatterns.com */
+	background-image: url("upfeathers.png");
+}
+jumbo { 
+    display: block;
+    font-size: 4em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+html, body, #container { height: 100%; }
+body > #container { height: auto; min-height: 100%; }
+#footer {
+ clear: both;
+ position: relative;
+ z-index: 10;
+ height: 3em;
+ margin-top: 3em;
+}
+#container { padding-left: 10em; padding-right:10em; }
+
+.SHWidth { width: 100%}
+.UnitWidth { width: 3em}
+.LabelWidth { width: 10em}
+.tright {text-align:right}
+.tcenter {text-align:center}

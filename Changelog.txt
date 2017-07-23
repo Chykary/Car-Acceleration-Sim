@@ -1,0 +1,6 @@
+- Rear Axle Ratio jetzt umbenannt zu Axle Ratio
+- Manuelles Schalten
+- Drehmomentkurve nun einstellbar
+- Anzeigen der aktuellen Beschleunigung als Text
+- Komma wird zu Punkt konvertiert und ist jetzt als Dezimaltrenner zulässig
+- Anzeige der Zeit für 50, 100, 200 km/h

@@ -1,0 +1,182 @@
+﻿<!doctype html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>Car Acceleration Simulation</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.js"></script>
+    <script src="js/routes.js"></script>
+    <script src="js/controllers.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/app.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- Google Font API -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!-- Charts -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js'></script>
+    <script src='js/angular-chart.min.js'></script>
+    <link href='js/angular-chart.min.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="js/angular-chart.min.css.map" type='text/plain'> </head>
+
+<body>
+    <div ng-controller="Main" id="container">
+        <div class="row">
+            <div class="col-xs-5">
+                <div>
+                    <div class="page-header">
+                        <h1>Vehicle Data</h1> </div>
+                    <div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Weight</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="weight"> <span class="input-group-addon"><div class="UnitWidth">kg</div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Drag Coefficient</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="drag"> <span class="input-group-addon"><div class="UnitWidth">c<sub>W</sub></div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Cross Sectional Area</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="A"> <span class="input-group-addon"><div class="UnitWidth">m²</div></span> </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="page-header">
+                        <h1>Tires</h1> </div>
+                    <div>
+                        <div class="input-group SHWidth">
+                            <input type="text" class="form-control" style="text-align:right" ng-model="tw"> <span class="input-group-addon "><div class="UnitWidth">/</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="tr"> <span class="input-group-addon "><div class="UnitWidth">R</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="rh"> </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="page-header">
+                        <h1>Gearing</h1> </div>
+                    <div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Gears</div></span>
+                            <input type="number" class="form-control" style="text-align:right" ng-model="gearCount" min="1" max="10" ng-change="updateGears()"> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Shift Delay</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="shiftDelay"> <span class="input-group-addon"><div class="UnitWidth">ms</div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Switching Point</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="switchPoint"> <span class="input-group-addon"><div class="UnitWidth">% RPM</div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Axle Ratio</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="rag"> <span class="input-group-addon"><div class="UnitWidth">:1</div></span> </div>
+                        <div ng-repeat="g in gears track by $index">
+                            <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Gear #{{$index+1}} Ratio</div></span>
+                                <input type="text" class="form-control" style="text-align:right" ng-model="gears[$index]"> <span class="input-group-addon"><div class="UnitWidth">:1</div></span> </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="page-header">
+                        <h1>Engine</h1> </div>
+                    <div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Maximum RPM</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="maxRPM"> <span class="input-group-addon"><div class="UnitWidth">RPM</div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Maximum Torque</div></span>
+                            <input type="text" class="form-control" style="text-align:right" ng-model="torque"> <span class="input-group-addon"><div class="UnitWidth">Nm</div></span> </div>
+                        <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Torque Characteristics</div></span>
+                            <div class="input-group">
+                                <input type="text" class="form-control" style="text-align:center" value="Naturally Aspirated" readonly> <span class="input-group-addon">
+						<input class="UnitWidth" type="radio" name="chara" checked ng-click="setTorque(0)">
+					  </span> </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" style="text-align:center" value="Turbo" readonly> <span class="input-group-addon">
+						<input class="UnitWidth" type="radio" name="chara" ng-click="setTorque(1)">
+					  </span> </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" style="text-align:center" value="Diesel" readonly> <span class="input-group-addon">
+						<input class="UnitWidth" type="radio" name="chara" ng-click="setTorque(2)">
+					  </span> </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" style="text-align:center" value="Electric" readonly> <span class="input-group-addon">
+						<input class="UnitWidth" type="radio" name="chara" ng-click="setTorque(3)">
+					  </span> </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" style="text-align:center" value="Custom" readonly> <span class="input-group-addon">
+						<input class="UnitWidth" type="radio" name="chara" ng-click="setTorque(4)">
+					  </span> </div>
+                        </div>
+                        <div style="background:white">
+                            <canvas id="line2" class="chart chart-line" chart-data="torqueData" chart-labels="torqueLabels" chart-series="torqueSeries"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-7">
+                <div style="padding-top:3em">
+                    <button class="btn btn-success" type="submit" ng-disabled="!buttonEnabled" ng-click="run()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Run</button>
+                    <button class="btn btn-info" style="width:10em" type="submit" ng-disabled="buttonEnabled||shiftButtonEnabled" ng-click="forceShift()"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{shiftButtonText}}</button>
+                </div>
+                <div style="padding-top:1em">
+                    <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">RPM</div></span>
+                        <input type="text" class="form-control" style="text-align:right" ng-model="currentRPM" readonly> </div>
+                    <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Gear</div></span>
+                        <input type="text" class="form-control" style="text-align:right" ng-model="currentGear" readonly> </div>
+                    <div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Speed</div></span>
+                        <input type="text" class="form-control" style="text-align:right" ng-model="currentSpeed" readonly> <span class="input-group-addon"><div class="UnitWidth">km/h</div></span> </div>
+						<div class="input-group SHWidth"> <span class="input-group-addon"><div class="LabelWidth">Acceleration</div></span>
+                        <input type="text" class="form-control" style="text-align:right" ng-model="currentAcc" readonly> <span class="input-group-addon"><div class="UnitWidth">m/s²</div></span> </div>
+                </div>
+                <div style="background:white; margin-top:1em">
+                    <canvas id="line" class="chart chart-line" chart-options="coptions" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
+                </div>
+				<div style="margin-top:1em">
+				<p ng-show="speedLabel50"><b>{{speedLabel50}}<b></p>
+				<p ng-show="speedLabel100"><b>{{speedLabel100}}<b></p>
+				<p ng-show="speedLabel200"><b>{{speedLabel200}}<b></p>
+				</div>
+            </div>
+
+        </div>
+        <div id="footer">
+            <p style="margin-left:1em"><i>by Marco Hoffmann. Write me an email! <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#104;&#105;&#107;&#97;&#114;&#105;&#64;&#116;&#45;&#111;&#110;&#108;&#105;&#110;&#101;&#46;&#100;&#101;">&#99;&#104;&#105;&#107;&#97;&#114;&#105;&#64;&#116;&#45;&#111;&#110;&#108;&#105;&#110;&#101;&#46;&#100;&#101;</a><noscript>[Turn on JavaScript to see the email address]</noscript><i><p>
+<p style="margin-left:1em"> Or just tweet me a bug or feature request. Updates will also be announced here.</p> <p style="margin-left:1em"> <a href="https://twitter.com/intent/tweet?screen_name=Chykary&text=http%3A%2F%2Fbit.ly%2F1W8GYqr%20%3C-%20" class="twitter-mention-button" data-related="Chykary">Tweet to @Chykary</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script><a id="1148469" href="http://www.gratis-besucherzaehler.de">Besucherzähler</a></p><p style="margin-left:1em"><script type="text/javascript" language="JavaScript" src="http://www.gratis-besucherzaehler.net/counter_js.php?account=1148469&style=11"></script></p></div>  
+			<div class="modal fade" id="customTorque" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">        
+        <h4 class="modal-title" id="myModalLabel">Custom Torque Characteristics</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+		  <div class="col-md-6"><p><b>RPM</b></p>
+		  <input type="text" class="form-control tcenter" value="0%" readonly>
+		  <input type="text" class="form-control tcenter" value="10%" readonly>
+		  <input type="text" class="form-control tcenter" value="20%" readonly>
+		  <input type="text" class="form-control tcenter" value="30%" readonly>
+		  <input type="text" class="form-control tcenter" value="40%" readonly>
+		  <input type="text" class="form-control tcenter" value="50%" readonly>
+		  <input type="text" class="form-control tcenter" value="60%" readonly>
+		  <input type="text" class="form-control tcenter" value="70%" readonly>
+		  <input type="text" class="form-control tcenter" value="80%" readonly>
+		  <input type="text" class="form-control tcenter" value="90%" readonly>
+		  <input type="text" class="form-control tcenter" value="100%" readonly>		  
+		  </div>
+		  <div class="col-md-6"><p><b>Torque %</b></p>
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][0]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][1]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][2]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][3]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][4]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][5]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][6]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][7]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][8]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][9]">
+		  <input type="number" class="form-control tcenter" min=0 max=100 ng-model="torqueData[0][10]">
+		  </div> 
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="setCustomTorque()">Set</button>
+      </div>
+    </div>
+  </div>
+</div>
+			</body>
+</html>
